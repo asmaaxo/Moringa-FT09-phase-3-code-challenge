@@ -19,29 +19,20 @@ def main():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-
-    '''
-        The following is just for testing purposes, 
-        you can modify it to meet the requirements of your implmentation.
-    '''
-
     # Create an author
     cursor.execute('INSERT INTO authors (name) VALUES (?)', (author_name,))
-    author_id = cursor.lastrowid # Use this to fetch the id of the newly created author
+    author_id = cursor.lastrowid  # Use this to fetch the id of the newly created author
 
     # Create a magazine
     cursor.execute('INSERT INTO magazines (name, category) VALUES (?,?)', (magazine_name, magazine_category))
-    magazine_id = cursor.lastrowid # Use this to fetch the id of the newly created magazine
+    magazine_id = cursor.lastrowid  # Use this to fetch the id of the newly created magazine
 
     # Create an article
     cursor.execute('INSERT INTO articles (title, content, author_id, magazine_id) VALUES (?, ?, ?, ?)',
                    (article_title, article_content, author_id, magazine_id))
-
     conn.commit()
 
-    # Query the database for inserted records. 
-    # The following fetch functionality should probably be in their respective models
-
+    # Query the database for inserted records.
     cursor.execute('SELECT * FROM magazines')
     magazines = cursor.fetchall()
 
@@ -51,9 +42,12 @@ def main():
     cursor.execute('SELECT * FROM articles')
     articles = cursor.fetchall()
 
+    # Delete an article
+    cursor.execute('DELETE FROM articles WHERE id = 1')
+    conn.commit()
     conn.close()
 
-    # Display results
+    # Display results, using from_db=True for records fetched from DB
     print("\nMagazines:")
     for magazine in magazines:
         print(Magazine(magazine["id"], magazine["name"], magazine["category"]))
